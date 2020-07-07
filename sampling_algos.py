@@ -37,8 +37,8 @@ class sample_class():
         if len(self.x.shape) == 1: # making x a 2D vector
             self.x = self.x.reshape((-1, 1))
             
-        self.x -= np.mean(self.x, 0)
         self.x /= np.max(np.std(self.x, 0))
+        self.x -= np.mean(self.x, 0)
         self.d = self.x.shape[1]
         
         gamma = np.zeros(self.n)        

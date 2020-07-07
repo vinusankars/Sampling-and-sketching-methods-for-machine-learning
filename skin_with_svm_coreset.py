@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul  7 21:20:47 2020
+Created on Tue Jul  7 22:54:38 2020
 
 @author: vinusankars
 """
@@ -14,11 +14,13 @@ from time import time
 
 np.random.seed(42)
 
-# read credit card data
-data = np.array(pd.read_excel('../credit_card.xls', index_col=0))
-attributes = data[0]
-x = data[1:, :-1].astype('float32')
-y = data[1:, -1].astype('int')
+# read skin data
+with open('../skin.txt', 'r') as f:
+    data = f.read().split('\n')[: -1]
+    
+data = np.array(list(map(str.split, data)))
+x = data[:, :-1].astype('float32')
+y = data[:, -1].astype('int')
 
 # generate plots
 svm_coreset_time = []
@@ -34,9 +36,9 @@ start = time()
 clf = svm.SVC(gamma=1)
 clf.fit(sample_method.x, y)
 svm_time = time()-start 
-svm_score = clf.score(sample_method.x, y) 
+svm_score = clf.score(sample_method.x, y)
 
-epses = [0.1+j*0.01 for j in range(11)][::-1]
+epses = [0.043+j*((0.15-0.043)/10) for j in range(11)][::-1]
 for i in epses:
     print("i = " + str(i))
     
@@ -58,13 +60,13 @@ for i in epses:
     random_sample_time.append(time()-start)
     random_sample_score.append(clf_random.score(sample_method.x, y))
     
-size = [8000+i*2000 for i in range(11)]
+size = [12000+i*((245000-12000)/10) for i in range(11)]
 plt.figure(figsize=(10, 5))
 plt.plot(size, [svm_score]*11, 'r--', label='All data SVM')
 plt.plot(size, svm_coreset_score, 'b-o', label='SVM coreset')
 plt.plot(size, random_sample_score, 'g-o', label='Uniform randomly sampled SVM')
 plt.xlabel('Coreset size')
 plt.ylabel('Training score')
-plt.title('SVM coresets on credit card dataset')
+plt.title('SVM coresets on skin dataset')
 plt.legend()
 plt.show()
