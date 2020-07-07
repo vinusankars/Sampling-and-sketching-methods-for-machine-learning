@@ -27,6 +27,7 @@ svm_coreset_time = []
 random_sample_time = []
 svm_coreset_score = []
 random_sample_score = []
+size = []
 
 sample_method = sample_class()
 _ = sample_method.svm_coreset(x=x, s=1000)
@@ -60,13 +61,24 @@ for i in epses:
     random_sample_time.append(time()-start)
     random_sample_score.append(clf_random.score(sample_method.x, y))
     
-size = [12000+i*((245000-12000)/10) for i in range(11)]
+    size.append(int(sample_method.m))
+
 plt.figure(figsize=(10, 5))
 plt.plot(size, [svm_score]*11, 'r--', label='All data SVM')
 plt.plot(size, svm_coreset_score, 'b-o', label='SVM coreset')
 plt.plot(size, random_sample_score, 'g-o', label='Uniform randomly sampled SVM')
 plt.xlabel('Coreset size')
 plt.ylabel('Training score')
+plt.title('SVM coresets on skin dataset')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(10, 5))
+plt.plot(size, [svm_time]*11, 'r--', label='All data SVM')
+plt.plot(size, svm_coreset_time, 'b-o', label='SVM coreset')
+plt.plot(size, random_sample_time, 'g-o', label='Uniform randomly sampled SVM')
+plt.xlabel('Coreset size')
+plt.ylabel('Training time')
 plt.title('SVM coresets on skin dataset')
 plt.legend()
 plt.show()
