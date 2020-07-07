@@ -49,6 +49,7 @@ class sample_class():
         m = t/self.eps**2 * (self.d*np.log10(t) + t*np.log10(1/self.delta))
         self.m = m
         self.gamma = gamma
+        self.t = t
            
         if force == True:        
             self.s = max(self.s, self.m)
