@@ -63,7 +63,7 @@ class sample_class():
             u[i] = t*K[i]/(gamma[i]*len(S))
             
         self.S = S
-        self.u = u[inds]
         self.inds = inds
+        self.u = u
         
         return (self.S, self.u)
