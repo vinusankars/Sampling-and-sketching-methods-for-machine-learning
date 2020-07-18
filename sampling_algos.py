@@ -67,3 +67,46 @@ class sample_class():
         self.u = u
         
         return (self.S, self.u)
+    
+    def craig(self, x, size=0.3):
+        """
+        Coresets for Data-efficient Training of Machine Learning Models
+        Mirzasoleiman et al. [ICML 2020]
+        
+        Output: Coreset S with their per-element stepsizes gammas
+        
+        Assumptions:
+        Eqn (9) holds.
+        """
+        
+        sigma = []
+        s0 = np.zeros(x.shape[-1]).tolist()
+        self.x = x    
+        self.size = len(x)*size
+        gammas = np.zeros(self.size)
+        
+        for i in range(self.size):             
+            e, L = np.inf, np.inf    
+            S  = x[sigma].tolist()
+            
+            for j in range(len(x)):                
+                if j not in sigma:
+                    
+                    s_ = np.stack(S + [x[j], s0])
+                    l = 0                    
+                    for k in range(len(x)):
+                        l += min(np.std(s_ - x[k], 0))
+                        
+                    if l < L:
+                        L = l
+                        e = j
+                        
+            sigma.append(e)
+        
+        for i in range(len(x)):
+            gammas[np.argmin(np.std(x[sigma] - x[i], 0))] += 1
+                
+        self.sigma = np.stack(sigma)
+        self.gammas = gammas
+        
+        return self.sigma, self.gammas
