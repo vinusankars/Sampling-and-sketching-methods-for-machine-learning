@@ -42,7 +42,7 @@ class LogisticRegression():
 
 # read covtype data
 with open('../covtype.binary', 'r') as f:
-    data = f.read().split('\n')[:10000]
+    data = f.read().split('\n')[:100]
     
 X = np.zeros((len(data), 54))
 y = np.zeros(len(data))
@@ -66,12 +66,14 @@ print("Time for LogR", time()-start)
 print("Score for LogR", reg.score(X, y))
 
 print("\nRunning CRAIG...")    
+frac = 0.4
 
+start = time()
 sc = sample_class()
 pos_class = (y == 1)
 neg_class = (y == -1)
-sigma_neg, gammas_neg = sc.craig(X[neg_class], 0.5)
-sigma_pos, gammas_pos = sc.craig(X[pos_class], 0.5)
+sigma_neg, gammas_neg = sc.craig(X[neg_class], frac)
+sigma_pos, gammas_pos = sc.craig(X[pos_class], frac)
 #sigma = [sigma_pos[int(i/2)]*int(i%2==0) + sigma_neg[int((i+1)/2)]*int(i%2==1) for i in range(len(sigma_neg) + len(sigma_pos))]
 #gammas = [gammas_pos[int(i/2)]*int(i%2==0) + gammas_neg[int((i+1)/2)]*int(i%2==1) for i in range(len(sigma_neg) + len(sigma_pos))]
 sigma = sigma_pos.tolist() + sigma_neg.tolist()
@@ -81,8 +83,17 @@ gammas = gammas_pos.tolist() + gammas_neg.tolist()
 gammas = np.stack(gammas)
 
 print("\nTraining regressor with CRAIG...")
-start = time()
 reg_craig  = LogisticRegression()
 reg_craig.fit(X[sigma], y[sigma], gammas)
 print("Time for LogR with CRAIG", time()-start)
 print("Score for LogR with CRAIG", reg_craig.score(X, y))
+
+start = time()
+sigma = np.random.randint(0, len(X), int(frac*len(X)))
+gammas = np.ones(len(sigma))*(len(X)/len(sigma))
+
+print("\nTraining regressor with random coresets...")
+reg_craig  = LogisticRegression()
+reg_craig.fit(X[sigma], y[sigma], gammas)
+print("Time for LogR with random coresets", time()-start)
+print("Score for LogR with random coresets", reg_craig.score(X, y))

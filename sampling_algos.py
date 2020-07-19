@@ -80,24 +80,28 @@ class sample_class():
         """
         
         sigma = []
-#        s0 = np.zeros(x.shape[-1]).tolist()
+        s0 = np.zeros(x.shape[-1]).tolist()
         self.x = x    
         self.size = int(len(x)*size)
         gammas = np.zeros(self.size)
         
         print("Finding coreset...")
         for i in range(self.size):             
-            e, L = np.inf, np.inf    
-#            S  = x[sigma].tolist()
+            e, L = np.inf, np.inf
+            
+            if sigma != []:
+                S  = x[sigma].tolist()
+            else:
+                S = []
             
             for j in range(len(x)):                
                 if j not in sigma:
                     
-#                    s_ = np.stack(S + [x[j], s0])
-#                    l = 0                    
-#                    for k in range(len(x)):
-#                        l += min(np.std(s_ - x[k], 0))
-                    l = np.sum(np.std(x - x[j], -1))
+                    s_ = np.stack(S + [x[j], s0])
+                    l = 0                    
+                    for k in range(len(x)):
+                        l += min(np.std(s_ - x[k], 1))
+#                    l = np.sum(np.std(x - x[j], -1))
                         
                     if l < L:
                         L = l
