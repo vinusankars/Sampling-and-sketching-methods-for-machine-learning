@@ -42,7 +42,9 @@ class LogisticRegression():
 
 # read covtype data
 with open('../covtype.binary', 'r') as f:
-    data = f.read().split('\n')[:100]
+    data = np.stack(f.read().split('\n'))[: -1]
+    np.random.shuffle(data)
+    data = data[: 200]
     
 X = np.zeros((len(data), 54))
 y = np.zeros(len(data))
@@ -66,7 +68,7 @@ print("Time for LogR", time()-start)
 print("Score for LogR", reg.score(X, y))
 
 print("\nRunning CRAIG...")    
-frac = 0.4
+frac = 0.9
 
 start = time()
 sc = sample_class()
