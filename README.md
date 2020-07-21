@@ -8,3 +8,7 @@ Dataset for coreset problems:
 
 Dataset for feature reduction probles:
 1. WebSpam dataset: Refered to in https://arxiv.org/pdf/1105.4385.pdf
+
+Papers referred:
+1. Training Support Vector Machines using Coresets by Baykal et al.
+2. Coresets for data-efficient training of machine learning models by Mirzasoleiman et al.
